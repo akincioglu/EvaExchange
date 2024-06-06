@@ -7,20 +7,24 @@ if (!DB_USERNAME || !DB_PASSWORD || !DB_NAME || !DB_HOST) {
   throw new Error("DB_USERNAME, DB_PASSWORD, DB_HOST environment variables are required.");
 }
 
-const connectDb = async () => {
-  try {
-    const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
-      host: DB_HOST,
-      dialect: "postgres",
-    });
+const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
+  host: DB_HOST,
+  dialect: "postgres",
+  logging: false,
+});
 
-    await sequelize.authenticate();
-    console.log(`Database: ${DB_NAME} connection success!`);
-  } catch (error) {
-    console.error("An error occoured while try to connect database", error);
-  }
-};
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Successfully connected to database.");
+  })
+  .catch((err) => {
+    console.error("Connection error =>", err);
+  });
 
-module.exports = {
-  connectDb,
-};
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+module.exports = db;
