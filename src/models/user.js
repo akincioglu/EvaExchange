@@ -9,7 +9,7 @@ const User = sequelize.define(
     id: {
       type: DataTypes.UUID,
       primaryKey: true,
-      defaultValue: () => uuidv4(), // uuidv4 yerine Sequelize.UUIDV4 kullanın
+      defaultValue: () => uuidv4(),
     },
     name: {
       type: DataTypes.STRING,

@@ -15,8 +15,12 @@ class BaseService {
     return this.baseModel.create(data);
   }
 
-  delete(_id) {
-    return this.baseModel.delete(_id);
+  update(id, data) {
+    return this.baseModel.update(id, data);
+  }
+
+  delete(id) {
+    return this.baseModel.delete(id);
   }
 }
 

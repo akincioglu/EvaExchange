@@ -6,9 +6,9 @@ const db = require("./loaders/db");
 const helmetMiddleware = require("./middlewares/helmet");
 const jsonMiddleware = require("./middlewares/json");
 
-const routes = require("./routes/index");
+const router = require("./router/index");
 
-const { AuthRoutes } = require("./routes");
+const exchangeRouter = require("./connector-exchange/router");
 
 db.sequelize
   .sync()
@@ -21,5 +21,6 @@ db.sequelize
 
 app.use(helmetMiddleware);
 app.use(jsonMiddleware);
-app.use("/auth", AuthRoutes);
+app.use("/auth", router.AuthRouters);
+app.use("/exchange", exchangeRouter);
 // app.use('/users', UserRoutes)
