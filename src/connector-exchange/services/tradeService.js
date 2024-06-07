@@ -18,6 +18,10 @@ class TradeService extends BaseService {
       throw new Error("Invalid user or share");
     }
 
+    if (!user.portfolioRegistered) {
+      throw new Error("User's portfolio is not registered");
+    }
+
     return await TradeModel.create({
       type: "BUY",
       quantity,
@@ -36,6 +40,10 @@ class TradeService extends BaseService {
         throw new Error("Invalid user or share");
       }
 
+      if (!user.portfolioRegistered) {
+        throw new Error("User's portfolio is not registered");
+      }
+
       const userTrades = await TradeModel.findAll({
         userId: user.id,
         shareId: share.id,
@@ -44,8 +52,6 @@ class TradeService extends BaseService {
       const totalBought = userTrades.filter((trade) => trade.type === "BUY").reduce((acc, trade) => acc + trade.quantity, 0);
 
       const totalSold = userTrades.filter((trade) => trade.type === "SELL").reduce((acc, trade) => acc + trade.quantity, 0);
-
-      console.log(totalBought, totalSold);
 
       const currentQuantity = totalBought - totalSold;
 
