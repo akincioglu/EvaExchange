@@ -16,8 +16,9 @@ class ShareController {
   };
 
   read = async (req, res) => {
+    const { shareId } = req.params;
     try {
-      const share = await this.shareService.read(req.params.symbol);
+      const share = await this.shareService.read({ id: shareId });
       res.status(httpStatus.OK).json(share);
     } catch (error) {
       res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });

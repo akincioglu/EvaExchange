@@ -13,6 +13,9 @@ const tradeSchema = Joi.object({
   quantity: Joi.number().integer().min(1).required(),
 });
 
+router.route("/").get(requireAuthenticate, requireAdmin, TradeController.list);
+router.route("/mine").get(requireAuthenticate, TradeController.myTrades);
+router.route("/:tradeId").get(requireAuthenticate, requireAdmin, TradeController.read);
 router.route("/buy").post(requireAuthenticate, validateBodyMiddleware(tradeSchema), TradeController.buy);
 router.route("/sell").post(requireAuthenticate, validateBodyMiddleware(tradeSchema), TradeController.sell);
 

@@ -4,7 +4,7 @@ class BaseService {
   }
 
   list(where = {}) {
-    return this.baseModel.findAll(where);
+    return this.baseModel.findAll({ where: where });
   }
 
   read(where) {

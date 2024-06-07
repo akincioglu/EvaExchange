@@ -1,18 +1,18 @@
 const BaseService = require("../../services/baseService");
 const TradeModel = require("../models/trade");
-const UserModel = require("../../models/user");
-const ShareModel = require("../models/share");
+const userService = require("../../services/userService");
+const shareService = require("../services/shareService");
 
 class TradeService extends BaseService {
   constructor() {
     super(TradeModel);
-    this.userModel = UserModel;
-    this.shareModel = ShareModel;
+    this.userService = userService;
+    this.shareService = shareService;
   }
 
   async buy(userId, shareId, quantity) {
-    const user = await UserModel.findOne({ id: userId });
-    const share = await ShareModel.findOne({ id: shareId });
+    const user = await this.userService.read({ id: userId });
+    const share = await this.shareService.read({ id: shareId });
 
     if (!user || !share) {
       throw new Error("Invalid user or share");
@@ -33,8 +33,8 @@ class TradeService extends BaseService {
 
   async sell(userId, shareId, quantity) {
     try {
-      const user = await UserModel.findOne({ id: userId });
-      const share = await ShareModel.findOne({ id: shareId });
+      const user = await this.userService.read({ id: userId });
+      const share = await this.shareService.read({ id: shareId });
 
       if (!user || !share) {
         throw new Error("Invalid user or share");

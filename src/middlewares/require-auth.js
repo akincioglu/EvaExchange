@@ -1,8 +1,9 @@
 const httpStatus = require("http-status");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const userService = require("../services/userService");
 
 const requireAuthenticate = (req, res, next) => {
+  this.userService = userService;
   const token = req.headers?.authorization?.split(" ")[1];
 
   if (!token) {
@@ -18,8 +19,7 @@ const requireAuthenticate = (req, res, next) => {
     }
 
     try {
-      const user = await User.findOne({ id: decoded.id });
-
+      const user = await this.userService.read({ id: decoded.id });
       if (!user) {
         return res.status(httpStatus.UNAUTHORIZED).json({ message: "User not found", statusCode: httpStatus.UNAUTHORIZED });
       }
