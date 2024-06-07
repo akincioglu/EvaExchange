@@ -20,6 +20,14 @@ const User = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    role: {
+      type: DataTypes.ENUM("admin", "customer"),
+      defaultValue: "customer",
+    },
+    portfolioRegistered: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,

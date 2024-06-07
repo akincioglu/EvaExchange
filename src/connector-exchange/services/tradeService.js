@@ -11,8 +11,8 @@ class TradeService extends BaseService {
   }
 
   async buy(userId, shareId, quantity) {
-    const user = await UserModel.findOne({ where: { id: userId } });
-    const share = await ShareModel.findOne({ where: { id: shareId } });
+    const user = await UserModel.findOne({ id: userId });
+    const share = await ShareModel.findOne({ id: shareId });
 
     if (!user || !share) {
       throw new Error("Invalid user or share");
@@ -29,27 +29,21 @@ class TradeService extends BaseService {
 
   async sell(userId, shareId, quantity) {
     try {
-      const user = await UserModel.findOne({ where: { id: userId } });
-      const share = await ShareModel.findOne({ where: { id: shareId } });
+      const user = await UserModel.findOne({ id: userId });
+      const share = await ShareModel.findOne({ id: shareId });
 
       if (!user || !share) {
         throw new Error("Invalid user or share");
       }
 
       const userTrades = await TradeModel.findAll({
-        where: {
-          userId: user.id,
-          shareId: share.id,
-        },
+        userId: user.id,
+        shareId: share.id,
       });
 
-      const totalBought = userTrades
-        .filter((trade) => trade.type === "BUY")
-        .reduce((acc, trade) => acc + trade.quantity, 0);
+      const totalBought = userTrades.filter((trade) => trade.type === "BUY").reduce((acc, trade) => acc + trade.quantity, 0);
 
-      const totalSold = userTrades
-        .filter((trade) => trade.type === "SELL")
-        .reduce((acc, trade) => acc + trade.quantity, 0);
+      const totalSold = userTrades.filter((trade) => trade.type === "SELL").reduce((acc, trade) => acc + trade.quantity, 0);
 
       console.log(totalBought, totalSold);
 

@@ -22,5 +22,6 @@ db.sequelize
 app.use(helmetMiddleware);
 app.use(jsonMiddleware);
 app.use("/auth", router.AuthRouters);
+app.use("/users", router.UserRouters);
 app.use("/exchange", exchangeRouter);
 // app.use('/users', UserRoutes)

@@ -8,7 +8,7 @@ class BaseService {
   }
 
   read(where) {
-    return this.baseModel.findOne(where);
+    return this.baseModel.findOne({ where: where });
   }
 
   create(data) {
@@ -16,7 +16,7 @@ class BaseService {
   }
 
   update(id, data) {
-    return this.baseModel.update(id, data);
+    return this.baseModel.update(data, { where: { id: id }, returning: true });
   }
 
   delete(id) {

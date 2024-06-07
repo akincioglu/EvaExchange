@@ -1,23 +1,53 @@
 const httpStatus = require("http-status");
 const jwt = require("jsonwebtoken");
-const ApiError = require("../errors/apiError");
+const User = require("../models/user");
 
-const authenticateToken = (req, res, next) => {
+const requireAuthenticate = (req, res, next) => {
   const token = req.headers?.authorization?.split(" ")[1];
 
   if (!token) {
-    next(new ApiError("Login first for to do this.", httpStatus.UNAUTHORIZED));
-    return;
+    return res.status(httpStatus.UNAUTHORIZED).json({
+      message: "Login first for to do this.",
+      statusCode: httpStatus.UNAUTHORIZED,
+    });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+  jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
     if (err) {
-      next(new ApiError(err.message, httpStatus.FORBIDDEN));
-      return;
+      return res.status(httpStatus.FORBIDDEN).json({ message: err.message, statusCode: httpStatus.FORBIDDEN });
     }
-    req.user = user;
-    next();
+
+    try {
+      const user = await User.findOne({ id: decoded.id });
+
+      if (!user) {
+        return res.status(httpStatus.UNAUTHORIZED).json({ message: "User not found", statusCode: httpStatus.UNAUTHORIZED });
+      }
+
+      req.user = user;
+      next();
+    } catch (error) {
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: error.message, statusCode: httpStatus.INTERNAL_SERVER_ERROR });
+    }
   });
 };
 
-module.exports = authenticateToken;
+const requireAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(httpStatus.UNAUTHORIZED).json({
+      message: "Login first for to do this.",
+      statusCode: httpStatus.UNAUTHORIZED,
+    });
+  }
+  if (req.user.role !== "admin") {
+    return res.status(httpStatus.FORBIDDEN).json({
+      message: "You have no permission",
+      statusCode: httpStatus.FORBIDDEN,
+    });
+  }
+  next();
+};
+
+module.exports = { requireAuthenticate, requireAdmin };
